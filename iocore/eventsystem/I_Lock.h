@@ -214,12 +214,11 @@ public:
 #ifdef MAX_LOCK_TAKEN
   int taken;
 #endif // MAX_LOCK_TAKEN
-
+#endif // DEBUG
 #ifdef LOCK_CONTENTION_PROFILING
   int total_acquires, blocking_acquires, nonblocking_acquires, successful_nonblocking_acquires, unsuccessful_nonblocking_acquires;
   void print_lock_stats(int flag);
 #endif // LOCK_CONTENTION_PROFILING
-#endif // DEBUG
   void free();
 
   /**
@@ -245,6 +244,7 @@ public:
 #ifdef MAX_LOCK_TAKEN
     taken = 0;
 #endif // MAX_LOCK_TAKEN
+#endif // DEBUG
 #ifdef LOCK_CONTENTION_PROFILING
     total_acquires = 0;
     blocking_acquires = 0;
@@ -252,7 +252,6 @@ public:
     successful_nonblocking_acquires = 0;
     unsuccessful_nonblocking_acquires = 0;
 #endif // LOCK_CONTENTION_PROFILING
-#endif // DEBUG
     // coverity[uninit_member]
   }
 
@@ -289,13 +288,13 @@ Mutex_trylock(
     if (!ink_mutex_try_acquire(&m->the_mutex)) {
 #ifdef DEBUG
       lock_waiting(m->srcloc, m->handler);
+#endif // DEBUG
 #ifdef LOCK_CONTENTION_PROFILING
       m->unsuccessful_nonblocking_acquires++;
       m->nonblocking_acquires++;
       m->total_acquires++;
       m->print_lock_stats(0);
 #endif // LOCK_CONTENTION_PROFILING
-#endif // DEBUG
       return false;
     }
     m->thread_holding = t;
@@ -308,14 +307,12 @@ Mutex_trylock(
 #endif // MAX_LOCK_TAKEN
 #endif // DEBUG
   }
-#ifdef DEBUG
 #ifdef LOCK_CONTENTION_PROFILING
   m->successful_nonblocking_acquires++;
   m->nonblocking_acquires++;
   m->total_acquires++;
   m->print_lock_stats(0);
 #endif // LOCK_CONTENTION_PROFILING
-#endif // DEBUG
   m->nthread_holding++;
   return true;
 }
@@ -337,13 +334,13 @@ Mutex_trylock_spin(
     if (!locked) {
 #ifdef DEBUG
       lock_waiting(m->srcloc, m->handler);
+#endif // DEBUG
 #ifdef LOCK_CONTENTION_PROFILING
       m->unsuccessful_nonblocking_acquires++;
       m->nonblocking_acquires++;
       m->total_acquires++;
       m->print_lock_stats(0);
 #endif // LOCK_CONTENTION_PROFILING
-#endif // DEBUG
       return false;
     }
     m->thread_holding = t;
@@ -357,14 +354,12 @@ Mutex_trylock_spin(
 #endif // MAX_LOCK_TAKEN
 #endif // DEBUG
   }
-#ifdef DEBUG
 #ifdef LOCK_CONTENTION_PROFILING
   m->successful_nonblocking_acquires++;
   m->nonblocking_acquires++;
   m->total_acquires++;
   m->print_lock_stats(0);
 #endif // LOCK_CONTENTION_PROFILING
-#endif // DEBUG
   m->nthread_holding++;
   return true;
 }
@@ -390,13 +385,11 @@ Mutex_lock(
 #endif // MAX_LOCK_TAKEN
 #endif // DEBUG
   }
-#ifdef DEBUG
 #ifdef LOCK_CONTENTION_PROFILING
   m->blocking_acquires++;
   m->total_acquires++;
   m->print_lock_stats(0);
 #endif // LOCK_CONTENTION_PROFILING
-#endif // DEBUG
   m->nthread_holding++;
   return true;
 }

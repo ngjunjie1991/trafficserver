@@ -73,7 +73,7 @@ ProxyMutex::print_lock_stats(int flag)
            (nonblocking_acquires > 0 ? unsuccessful_nonblocking_acquires * 100.0 / nonblocking_acquires : 0.0), blocking_acquires);
     fflush(stdout);
   } else {
-    if (!(total_acquires % 100)) {
+    if (!(total_acquires % 1000)) {
       printf("Lock Stats (Alive):successful %d (%.2f%%), unsuccessful %d (%.2f%%) blocking %d \n", successful_nonblocking_acquires,
              (nonblocking_acquires > 0 ? successful_nonblocking_acquires * 100.0 / nonblocking_acquires : 0.0),
              unsuccessful_nonblocking_acquires,
